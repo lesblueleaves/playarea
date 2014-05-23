@@ -1,0 +1,13 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+GET		/api/file/list/:path		controllers.Space.index(path:String)
+GET		/api/file/data/*path		controllers.Space.get(path:String)
+POST	/api/file/data/:path		controllers.Space.upload(path:String)
+GET		/api/file/akka/*path			controllers.Space.file(path:String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

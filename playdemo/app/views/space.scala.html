@@ -1,0 +1,26 @@
+@(docs:List[Document],path:String="123/222/333")
+
+@import helper._
+
+@main("Doc list"){
+
+<h1>@docs.size doc(s)</h1>
+	<ul>
+		@docs.map{ doc =>
+			<li>
+				@doc.path
+				
+			</li>
+		}
+	</ul>
+
+	<h2>Add a new doc</h2>
+	
+	@form(action = routes.Space.upload(path), 'enctype -> "multipart/form-data") {
+	 <input type="file" name="doc">
+	 <p>
+	 <input type="submit" value="Upload">
+	 </p>
+	 }
+
+}
