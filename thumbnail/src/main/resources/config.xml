@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+   	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+   ">
+
+    <!-- bean id="officeManager" class="com.cisco.d3a.filemon.impl.support.OfficeManagerFactory">
+        <property name="host" value="${openoffice.connection.host}"/>
+        <property name="port" value="${openoffice.connection.port}"/>
+    </bean -->
+
+    <bean id="captureSpec" class="com.cisco.d3a.filemon.api.CaptureSpec">
+        <property name="name" value="original"/>
+        <property name="type" value="${thumbnail.spec.orig.type}"/>
+        <property name="path" value="${thumbnail.spec.orig.path}"/>
+        <property name="numOfPages" value="${thumbnail.spec.orig.numOfPages}"/>
+        <property name="ratio" value="${thumbnail.spec.orig.ratio}"/>
+    </bean>
+    
+    <util:list id="resizeSpecs">
+        <bean class="com.cisco.d3a.filemon.api.CaptureSpec">
+            <property name="name" value="large"/>
+            <property name="type" value="${thumbnail.spec.large.type}"/>
+            <property name="path" value="${thumbnail.spec.large.path}"/>
+            <property name="numOfPages" value="${thumbnail.spec.large.numOfPages}"/>
+            <property name="ratio" value="${thumbnail.spec.large.ratio}"/>
+        </bean>
+        <bean class="com.cisco.d3a.filemon.api.CaptureSpec">
+            <property name="name" value="medium"/>
+            <property name="type" value="${thumbnail.spec.medium.type}"/>
+            <property name="path" value="${thumbnail.spec.medium.path}"/>
+            <property name="numOfPages" value="${thumbnail.spec.medium.numOfPages}"/>
+            <property name="maxWidth" value="${thumbnail.spec.medium.maxWidth}"/>
+            <property name="maxHeight" value="${thumbnail.spec.medium.maxHeight}"/>
+        </bean>
+        <bean class="com.cisco.d3a.filemon.api.CaptureSpec">
+            <property name="name" value="small"/>
+            <property name="type" value="${thumbnail.spec.small.type}"/>
+            <property name="path" value="${thumbnail.spec.small.path}"/>
+            <property name="numOfPages" value="${thumbnail.spec.small.numOfPages}"/>
+            <property name="maxWidth" value="${thumbnail.spec.small.maxWidth}"/>
+            <property name="maxHeight" value="${thumbnail.spec.small.maxHeight}"/>
+        </bean>
+    </util:list>
+    
+    
+
+</beans>

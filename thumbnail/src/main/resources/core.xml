@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+   	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+   ">
+
+    <bean id="blockingQueue" class="java.util.concurrent.LinkedBlockingQueue"/>
+
+    <bean id="statisticsHandler" class="com.cisco.d3a.filemon.StatisticsHandler"/>
+          
+    <bean id="localStorage" class="com.cisco.d3a.filemon.impl.LocalStorageImpl">
+        <property name="imageFolder" value="${path.thumbnail}"/>
+        <property name="localFolder" value="${path.local}"/>
+        <property name="tempFolder" value="${path.temp}"/>
+    </bean>
+ 
+    <bean id="fileCleaner" class="com.cisco.d3a.filemon.impl.FileCleaner">
+        <property name="localStorage" ref="localStorage"/>
+        <property name="fileManager" ref="fileManager"/>
+    </bean>
+
+    <bean id="thumbnailCapturer" class="com.cisco.d3a.filemon.impl.ThumbnailCapturer">
+        <property name="imageCapturerManager" ref="imageCapturerManager"/>
+        <property name="localStorage" ref="localStorage"/>
+        <property name="endpoint" value="${d3a.api.thumbnail.endpoint}"/>
+        <property name="captureSpec" ref="captureSpec"/>
+        <property name="resizeSpecs" ref="resizeSpecs"/>
+        <property name="statisticsHandler" ref="statisticsHandler"/>
+        <property name="urlPrefix" value="http://${host.ip}:${http.port}/${http.endpoint.file}"/>
+    </bean>
+
+    <bean id="pdfBoxImageCapturer" class="com.cisco.d3a.filemon.impl.img.PdfBoxImageCapturer">
+        <property name="secondary" ref="pdfImageCapturer"/>
+    </bean>
+
+    <bean id="pdfImageCapturer" class="com.cisco.d3a.filemon.impl.img.SunPdfRendererImageCapturer">
+    </bean>
+
+    <bean id="sunIoImageCapturer" class="com.cisco.d3a.filemon.impl.img.SunIoImageCapturer">
+    </bean>
+
+    <bean id="pngImageCapturer" class="com.cisco.d3a.filemon.impl.img.PngImageCapturer">
+    </bean>
+
+    <bean id="psdLibraryImageCapturer" class="com.cisco.d3a.filemon.impl.img.PsdLibraryImageCapturer">
+        <property name="secondary" ref="psdParserImageCapturer"/>
+    </bean>
+
+    <bean id="psdParserImageCapturer" class="com.cisco.d3a.filemon.impl.img.PsdParserImageCapturer">
+    </bean>
+  
+    <bean id="txtBoxImageCapturer" class="com.cisco.d3a.filemon.impl.img.TextImageCapturer">
+        <property name="pdfBoxImageCapturer" ref="pdfBoxImageCapturer"/>
+    </bean>
+    
+    <bean id="htmlBoxImageCapturer" class="com.cisco.d3a.filemon.impl.img.HtmlImageCapturer">
+    </bean>
+    
+    <bean id="msOfficeImageCapturer" class="com.cisco.d3a.filemon.impl.img.MSOfficeImageCapturer">
+        <property name="pathToOfficeToPng" value="${msoffice.pathOfOfficeToPng}"/>
+    </bean>
+
+    <bean id="pdfToImageCapturer" class="com.cisco.d3a.filemon.impl.img.PdfToImageCapturer">
+        <property name="pathToPdfToImage" value="${pdf2image.pathToPdfToImage}"/>
+        <property name="secondary" ref="pdfBoxImageCapturer"/>
+    </bean>
+
+    <bean id="imageCapturerManager" class="com.cisco.d3a.filemon.impl.img.ImageCapturerManager">
+        <property name="fallbackType" value="*"/>
+        <property name="imageCapturers">
+            <util:map>
+                <entry key="pdf"><ref local="pdfToImageCapturer"/></entry>
+                <entry key="txt"><ref local="txtBoxImageCapturer"/></entry>
+                <!--                 
+                <entry key="h"><ref local="txtBoxImageCapturer"/></entry>
+                <entry key="c"><ref local="txtBoxImageCapturer"/></entry>
+                <entry key="cpp"><ref local="txtBoxImageCapturer"/></entry>
+                <entry key="java"><ref local="txtBoxImageCapturer"/></entry>
+                <entry key="xml"><ref local="txtBoxImageCapturer"/></entry>
+                <entry key="js"><ref local="txtBoxImageCapturer"/></entry>
+                -->
+                
+                <entry key="xls"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="xlsx"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="ppt"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="pptx"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="doc"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="docx"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="rtf"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="xps"><ref local="msOfficeImageCapturer"/></entry>
+                <entry key="vsd"><ref local="msOfficeImageCapturer"/></entry>
+                
+                <entry key="png"><ref local="sunIoImageCapturer"/></entry>
+                <entry key="gif"><ref local="sunIoImageCapturer"/></entry>
+                <entry key="tif"><ref local="sunIoImageCapturer"/></entry>
+                <entry key="jpg"><ref local="sunIoImageCapturer"/></entry>
+                <entry key="jpeg"><ref local="sunIoImageCapturer"/></entry>
+                <entry key="tiff"><ref local="sunIoImageCapturer"/></entry>
+                <entry key="bmp"><ref local="sunIoImageCapturer"/></entry>
+                
+                <entry key="psd"><ref local="psdLibraryImageCapturer"/></entry>
+            </util:map>
+        </property>
+    </bean>
+
+    <bean id="fileManager" class="com.cisco.d3a.filemon.util.FileManager">
+        <property name="statisticsHandler" ref="statisticsHandler"/>
+        <property name="endpoint" value="${d3a.api.rawdata.endpoint}"/>
+    </bean>
+    
+    <bean id="fileMonitor" class="com.cisco.d3a.filemon.FileMonitor">
+        <property name="processors">
+            <util:map>
+                <entry key="add">
+                    <util:list>
+                        <ref bean="thumbnailCapturer"/>
+                    </util:list>
+                </entry>
+                <entry key="edit">
+                    <util:list>
+                        <ref bean="thumbnailCapturer"/>
+                    </util:list>
+                </entry>
+                <entry key="copy">
+                    <util:list>
+                        <ref bean="thumbnailCapturer"/>
+                    </util:list>
+                </entry>
+                <entry key="move">
+                    <util:list>
+                        <ref bean="thumbnailCapturer"/>
+                    </util:list>
+                </entry>
+                <entry key="delete">
+                    <util:list>
+                        <ref bean="fileCleaner"/>
+                    </util:list>
+                </entry>
+            </util:map>
+        </property>
+        <property name="executorService">
+            <bean class="java.util.concurrent.ThreadPoolExecutor">
+                <constructor-arg value="${threadpool.min}"/>
+                <constructor-arg value="${threadpool.max}"/>
+                <constructor-arg value="30"/>
+                <constructor-arg>
+                    <value type="java.util.concurrent.TimeUnit">SECONDS</value>
+                </constructor-arg>
+                <constructor-arg ref="blockingQueue"/>
+            </bean>
+        </property>
+        <property name="blockingQueue" ref="blockingQueue"/>
+        <property name="localStorage" ref="localStorage"/>
+        <property name="fileManager" ref="fileManager"/>
+        <property name="statisticsHandler" ref="statisticsHandler"/>
+    </bean>
+    
+    <bean id="webServer" class="com.cisco.d3a.filemon.http.WebServer">
+        <property name="statisticsHandler" ref="statisticsHandler"/>
+        <property name="port" value="${http.port}"/>        
+        <property name="index" value="${http.directory.index}"/>
+        <property name="docRoot" value="${path.thumbnail}"/>  
+        <property name="urlPrefix" value="${http.endpoint.file}"/>      
+    </bean>
+</beans>

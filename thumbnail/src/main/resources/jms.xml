@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd
+    http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+   " >
+
+	<bean id="broker" class="java.lang.String">
+		<constructor-arg value="${activemq.broker}" />
+	</bean>
+
+	<bean id="space" class="java.lang.String">
+		<constructor-arg value="${activemq.topicName}" />
+	</bean>
+
+	<amq:connectionFactory id="jmsFactory" brokerURL="${activemq.broker}" />
+
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="jmsFactory" />
+	</bean>
+
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
+		<property name="defaultDestination" ref="d3aChannelTopic" />
+	</bean>
+
+	<amq:topic id="d3aChannelTopic" physicalName="${activemq.topicName}" />
+
+	<jms:listener-container connection-factory="cachingConnectionFactory"
+		destination-type="topic">
+		<jms:listener destination="${activemq.topicName}" ref="fileMonitor"
+			selector="__self__ AND __method__ = 'onFileModified'" />
+	</jms:listener-container>
+
+</beans>
