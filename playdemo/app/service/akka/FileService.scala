@@ -42,7 +42,7 @@ class FileService extends Actor {
       FileHelper.download(url, name)
     case FileInfo(host,context,path,name) =>{
       println(s"got msg:$host, $context, $path, $name")
-      val actionContext = new ActionContext( path, "", "", "", "", DateTime.now());
+      val actionContext = new ActionContext( path, "", "", "", "");
       FileHelper.download(host+context+path+name, name)
     }
     case _ =>

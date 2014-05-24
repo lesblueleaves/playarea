@@ -10,6 +10,8 @@ import org.apache.commons.exec.Watchdog
 import org.apache.commons.exec.TimeoutObserver
 import scala.sys.process._
 import helper.filemon.api.ImageCapturer
+import helper.filemon.impl.ThumbnailCapturer
+import helper.filemon.api.ActionContext
 
 
 class MSOfficeImageCapturer extends ImageCapturer {
@@ -36,11 +38,13 @@ class MSOfficeImageCapturer extends ImageCapturer {
 }
 
 object Main extends App {
-  Console.println("Hello World: " + (args mkString ", "))
-  val cap: MSOfficeImageCapturer = new MSOfficeImageCapturer()
-  val captureSpec = new CaptureSpec("origin", "png", "ORIG", 100, 0, 0, -1)
-  cap.doCapture(new File("down/ASS.xps"), new File("temp"), captureSpec)
+  println("Hello World: " + (args mkString ", "))
+//  val cap: MSOfficeImageCapturer = new MSOfficeImageCapturer()
+//  val captureSpec = new CaptureSpec("origin", "png", "ORIG", 100, 0, 0, -1)
+//  cap.doCapture(new File("down/ASS.xps"), new File("temp"), captureSpec)
 
   //	Process("cmd", Seq("cd f:/"))!
+ def cap:ThumbnailCapturer = new ThumbnailCapturer
+ cap.onModified(new File("down/ASS.xps"), new ActionContext("ASS.xps","","","",""))
 
 }

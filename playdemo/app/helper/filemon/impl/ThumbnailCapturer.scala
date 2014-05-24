@@ -21,7 +21,7 @@ object ThumbnailCapturer {
   val endPoint: String = ""
 }
 
-class ThumbnailCapturer() {
+class ThumbnailCapturer{
 
   def onModified(file: File, context: ActionContext) = {
     try {
@@ -34,6 +34,7 @@ class ThumbnailCapturer() {
       val imageCapture: ImageCapturer = new MSOfficeImageCapturer
       val imageFolder: File = localStorage.getTempFile(context.path, true);
 
+      println(s"imageFolder:$imageFolder")
       val tImageFolder = new File(imageFolder, captureSpec.path);
       tImageFolder.mkdirs();
 
