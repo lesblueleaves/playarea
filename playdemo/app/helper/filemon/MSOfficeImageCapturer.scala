@@ -3,11 +3,11 @@ package helper.filemon
 import java.io.File
 import play.api.Logger
 import scala.collection.immutable.HashMap
-import org.apache.commons.exec.CommandLine
-import org.apache.commons.exec.DefaultExecutor
-import org.apache.commons.exec.ExecuteWatchdog
-import org.apache.commons.exec.Watchdog
-import org.apache.commons.exec.TimeoutObserver
+//import org.apache.commons.exec.CommandLine
+//import org.apache.commons.exec.DefaultExecutor
+//import org.apache.commons.exec.ExecuteWatchdog
+//import org.apache.commons.exec.Watchdog
+//import org.apache.commons.exec.TimeoutObserver
 import scala.sys.process._
 import helper.filemon.api.ImageCapturer
 import helper.filemon.impl.ThumbnailCapturer
