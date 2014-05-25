@@ -9,7 +9,6 @@ import models.Document
 import play.api.Logger
 import java.io.File
 import org.joda.time.DateTime
-import controllers.routes
 import models.Updatable
 import service.akka.FileService
 
@@ -20,15 +19,16 @@ object Space extends Controller {
   val dir ="var/SH/"
 
   def index(path: String) = Action { request =>
-
-    def docs = Updatable.find[Document]("path" -> "123/222/333")
-    Ok(views.html.space(docs))
+  
+    println(s"path:$path")
+    def docs = Updatable.find[Document]("path" -> path)
+    Ok(views.html.space(docs,path))
   }
 
   def get(path: String) = Action {
     Ok.sendFile(
       content = new java.io.File(dir+path),
-      fileName = _ => "usaidit.pdf")
+      fileName = _ => "")
   }
 
   def upload(path: String) = Action(parse.multipartFormData) { request =>
@@ -44,9 +44,9 @@ object Space extends Controller {
       //    		  	"size"->111,"lastModified"->123l,"dateCreated"->DateTime.now(),"path"->path, "folder"->false)
       document.save
       FileService.onFileChange(host, context,"",filename)
-      Redirect(routes.Space.index(path))
+      Redirect(s"/api/file/list/$path")
     }.getOrElse {
-      Redirect(routes.Space.index(path)).flashing(
+      Redirect(path).flashing(
         "error" -> "Missing file")
     }
   }
