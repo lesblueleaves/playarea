@@ -27,8 +27,6 @@ class MSOfficeImageCapturer extends ImageCapturer {
 
       val cmd = Seq(pathToOfficeToPng, "-i", from.getCanonicalPath(), "-o", to.getCanonicalPath())
       Logger.info("Executing command: " + cmd.toList);
-      println(cmd.toList);
-      //        cmd.lines 
       Process(cmd)!
 
     } catch {
@@ -39,12 +37,12 @@ class MSOfficeImageCapturer extends ImageCapturer {
 
 object Main extends App {
   println("Hello World: " + (args mkString ", "))
-//  val cap: MSOfficeImageCapturer = new MSOfficeImageCapturer()
+//  val cap = new MSOfficeImageCapturer()
 //  val captureSpec = new CaptureSpec("origin", "png", "ORIG", 100, 0, 0, -1)
 //  cap.doCapture(new File("down/ASS.xps"), new File("temp"), captureSpec)
 
   //	Process("cmd", Seq("cd f:/"))!
- def cap:ThumbnailCapturer = new ThumbnailCapturer
- cap.onModified(new File("down/ASS.xps"), new ActionContext("ASS.xps","","","",""))
+ def cap = new ThumbnailCapturer
+ cap.onModified(new File("down/1.pptx"), new ActionContext("1.pptx","","","",""))
 
 }

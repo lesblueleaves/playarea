@@ -41,13 +41,13 @@ class ImageResizer(from:File,image:BufferedImage) {
 
   def this(from: File) = this(from,ImageIO.read(from))
 
-  def this (image: BufferedImage) = this(new File(""),image)
+//  def this (image: BufferedImage) = this(new File(""),image)
 
   @throws[IOException]
-  def getImage():BufferedImage = {
+  def getImage:BufferedImage = {
     if (image == null)  ImageIO.read(from);
     if (image == null) throw new IOException("Can not load image from " + from.getName());
-    return image;
+    image
   }
 
   @throws[IOException]
@@ -55,7 +55,7 @@ class ImageResizer(from:File,image:BufferedImage) {
 
   @throws[IOException]
   def resize(to: File, width: Int, height: Int, stype: String, withHints: Boolean): Boolean = {
-    val resizedImage: BufferedImage = ImageResizerHelper.resizeImage(getImage(), width, height, withHints);
+    val resizedImage: BufferedImage = ImageResizerHelper.resizeImage(getImage, width, height, withHints);
     return ImageIO.write(resizedImage, stype, to);
   }
 }

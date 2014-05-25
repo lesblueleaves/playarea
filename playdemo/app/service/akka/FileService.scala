@@ -10,6 +10,8 @@ import _root_.java.io.Reader
 import org.xml.sax.InputSource
 import helper.filemon.api.ActionContext
 import org.joda.time.DateTime
+import helper.filemon.impl.ThumbnailCapturer
+import play.api.Logger
 
 object FileService {
   val system = ActorSystem("FileSystem")
@@ -38,19 +40,21 @@ class FileService extends Actor {
 
   def receive = {
     case FileElem(url, name) =>
-      println(s"got msg:$url, $name")
       FileHelper.download(url, name)
     case FileInfo(host,context,path,name) =>{
       println(s"got msg:$host, $context, $path, $name")
       val actionContext = new ActionContext( path, "", "", "", "");
       FileHelper.download(host+context+path+name, name)
+      onModified(path+name,new ActionContext(name,"","","","") )
     }
     case _ =>
       println("anythin else!")
   }
   
-  def  onModified(actionContext:ActionContext){
-    
+  def  onModified(fullPath:String,actionContext:ActionContext){
+    def capture = new ThumbnailCapturer
+    Logger.info(s"fullPath:$fullPath")
+    capture.onModified(new File("down/"+fullPath), actionContext)
   }
 
 }

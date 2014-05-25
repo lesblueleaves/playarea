@@ -15,13 +15,13 @@ import service.akka.FileService
 
 object Space extends Controller {
   
-  val host="http://10.140.92.115:9000"
+  val host="http://localhost:9000"
   val context="/api/file/data/"
   val dir ="var/SH/"
 
   def index(path: String) = Action { request =>
 
-    def docs = Updatable.find[Document]("path" -> "/111/22")
+    def docs = Updatable.find[Document]("path" -> "123/222/333")
     Ok(views.html.space(docs))
   }
 

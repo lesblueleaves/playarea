@@ -9,10 +9,10 @@ class LocalStorageImpl extends LocalStorage {
   val tempFolder = "data/temp"
   val _tempFolder: File = new File(tempFolder)
 
-  val localFolder = "data/root"
+  val localFolder = "data/local"
   val _localFolder: File = new File(localFolder)
 
-  val imageFolder = "data/root"
+  val imageFolder = "data/prod"
   val _imageFolder: File= new File(imageFolder)
   
   def LocalStorageImpl(){
