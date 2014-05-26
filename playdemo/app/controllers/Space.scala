@@ -13,51 +13,38 @@ import models.Updatable
 import service.akka.FileService
 import play.utils.UriEncoding
 import utils.Configs
+import helper.FileHelper
 
 object Space extends Controller {
-  
-//  val host="http://localhost:9000"
-//  val context="/api/file/data/"
-//  val dir ="var/SH/"
-//  val encode ="utf-8"
 
   def index(path: String) = Action { request =>
-    Logger.info(s"path=>$path")
+    Logger.debug(s"path=>$path")
     def docs = Updatable.find[Document]("path" -> path)
     Ok(views.html.space(docs,path))
   }
 
   def get(path: String) = Action {
-    Logger.info(s"path=>$path")
     val dpath = UriEncoding.decodePath(path, Configs.encode)
-    Logger.info(Array(Configs.dir,dpath).mkString("/"))
+    Logger.info(FileHelper.getPathString(Configs.dir,dpath))
     Ok.sendFile(
-//      content = new java.io.File(dir+dpath),
-        content = new java.io.File(Array(Configs.dir,dpath).mkString("/")),
+        content = new java.io.File(FileHelper.getPathString(Configs.dir,dpath)),
       fileName = _ => "")
   }
 
   def upload(path: String) = Action(parse.multipartFormData) { request =>
-    Logger.info(s"path=>$path")
-   
     request.body.file("doc").map { doc =>
       import java.io.File
       val filename = doc.filename
       val contentType = doc.contentType
-      val absPath= Array(Configs.dir,path,filename).mkString("/")
-      
-      
-       Logger.info(s"path=>$absPath")
-      
-      val exists = FileService.isExists(absPath)
-      Logger.debug(s"exists:$exists")
+      val absPath = FileHelper.getPathString(Configs.dir,path,filename)
+      val exists = FileHelper.isExists(absPath)
+      Logger.debug(s"absPath=>$absPath,exists:$exists")
       
       if(exists){
 //         Redirect("/400")
         Results.Conflict
       }
       
-//      doc.ref.moveTo(new File(s"$dir$path/$filename"))
        doc.ref.moveTo(new File(absPath),true)
 
       val document = Document(None, Option(" "), Option(" "), Option(filename), Option(" "), Option(11), Option(1234l), DateTime.now(), Option(path), Option(false));
@@ -71,9 +58,5 @@ object Space extends Controller {
     }
   }
 
-  def file(path: String) = Action { request =>
-    FileService.onFileChange(path, "thisisit.pdf")
-    Ok("ok")
-  }
 
 }

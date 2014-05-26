@@ -29,32 +29,32 @@ class ThumbnailCapturer {
 
   def onModified(file: File, context: ActionContext) = {
     try {
-      val fullPath: String = context.path
-      val ext: String = FilenameUtils.getExtension(fullPath)
+      val contextPath: String = context.getPath
+      val ext: String = FilenameUtils.getExtension(contextPath)
       val before = DateTime.now().getMillis()
       val localStorage: LocalStorage = new LocalStorageImpl
       val captureSpec = new CaptureSpec("origin", "png", "ORIG", 100, 0, 0, -1)
 
       val imageCapture: ImageCapturer = new MSOfficeImageCapturer
-      val imageFolder: File = localStorage.getTempFile(context.path, true);
+      val imageFolder: File = localStorage.getTempFile(context.getPath, true);
 
       val tImageFolder = new File(imageFolder, captureSpec.path);
       tImageFolder.mkdirs();
 
-      val thumbFolder: File = localStorage.getThumbnailFile(context.path, true);
+      val thumbFolder: File = localStorage.getThumbnailFile(context.getPath, true);
       var thumbnailGenerated = false;
 
       try {
-        Logger.info("Capture thumbnails for " + context.path);
+        Logger.info("Capture thumbnails for " + context.getPath);
         imageCapture.capture(file, tImageFolder, captureSpec)
         thumbnailGenerated = true
       } catch {
         case x: IOException => {
-          Logger.error("Error in capturing thumbnail for " + fullPath);
+          Logger.error("Error in capturing thumbnail for " + contextPath);
           println (x)
         }
         case x: Exception => {
-          Logger.error("Error in capturing thumbnail for " + fullPath);
+          Logger.error("Error in capturing thumbnail for " + contextPath);
             println (x)
         }
       }
@@ -70,9 +70,9 @@ class ThumbnailCapturer {
 
         if (!thumbnails.isEmpty) {
           resizeThumbnails(file, thumbFolder, thumbnails, context);
-          Logger.info("Thumbnail " + fullPath + " captured in " + (System.currentTimeMillis() - before) + " ms.");
+          Logger.info("Thumbnail " + contextPath + " captured in " + (System.currentTimeMillis() - before) + " ms.");
         } else {
-          Logger.info("No thumbnails captured for " + fullPath);
+          Logger.info("No thumbnails captured for " + contextPath);
         }
         
          try {
@@ -152,7 +152,7 @@ class ThumbnailCapturer {
 //				client.getConnectionManager().shutdown();		
 			}
         } else {
-			Logger.warn("Invalid thumbnail folder: " + thumbnailFolder.getName() + " for " + context.path);
+			Logger.warn("Invalid thumbnail folder: " + thumbnailFolder.getName() + " for " + context.getPath);
 		}
 	}
 	
@@ -168,7 +168,7 @@ class ThumbnailCapturer {
         val thumbArr = new ArrayBuffer[String]()
         
 		thumbnails.foreach { t=>
-			 thumbArr += Array(ThumbnailCapturer.urlPrefix,context.path,resizeSpec.path,t.getName).mkString("/")
+			 thumbArr += Array(ThumbnailCapturer.urlPrefix,context.getPath,resizeSpec.path,t.getName).mkString("/")
         }
 		thumbArr
 		

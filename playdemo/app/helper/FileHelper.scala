@@ -12,16 +12,16 @@ object FileHelper {
   val encode="utf-8"
 
   def download(prefix: String, path:String, name: String) = {
-    val url = prefix + getEncodedFullPath(path,name)
-    val fullPath = getFullPath(path,name)
-    Logger.info("Gonna to fetch an URL: " + url )
-    Logger.info("fullPath: " + fullPath )
-//    Logger.info("Gonna to fetch an URL:encoded " + UriEncoding.encodePathSegment(urlString, encode) )
+    val absPath = getAbsPath(path,name)
+    val url = getPathString(prefix, getEncodedPath(absPath))
+    
+    Logger.info(s"Gonna to fetch an URL:$url")
+    Logger.info(s"absPath:$absPath" )
     WS.url(url).get.map { response =>
       val bytes = response.getAHCResponse.getResponseBodyAsBytes()
 
       if (!(new File(dir+path)).exists()) new File(dir+path).mkdirs()
-      val output = new FileOutputStream(new File(dir + fullPath));
+      val output = new FileOutputStream(new File(dir + absPath));
 
       output.write(bytes)
       output.close
@@ -29,7 +29,11 @@ object FileHelper {
     }
   }
   
-  def getFullPath(path:String, name: String):String = if(!path.endsWith("/"))  path+"/"+name else path+name
+  def getAbsPath(path:String, name: String):String = if(!path.endsWith("/"))  path+"/"+name else path+name
 
-  def getEncodedFullPath(path:String, name: String):String = UriEncoding.encodePathSegment(getFullPath(path,name),encode)
+  def getEncodedPath(path:String):String = UriEncoding.encodePathSegment(path,encode)
+
+  def getPathString(path:String*):String=path.mkString("/")
+  
+  def isExists(path:String):Boolean=new File(path).exists() && new File(path).isFile()
 }
