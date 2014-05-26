@@ -1,4 +1,4 @@
-package akka
+package localakka
 
 import akka.actor.Actor
 import akka.actor.ActorSystem
