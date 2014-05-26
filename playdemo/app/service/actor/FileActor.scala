@@ -11,13 +11,14 @@ class FileActor extends Actor{
   import helper.FileHelper
 
   def receive = {
-    case FileElem(url, name) =>
-      FileHelper.download(url, name)
+//    case FileElem(url, name) =>
+//      FileHelper.download(url, name)
     case FileInfo(host,context,path,name) =>{
       println(s"got msg:$host, $context, $path, $name")
       val actionContext = new ActionContext( path, "", "", "", "");
-      FileHelper.download(host+context+path+name, name)
-      onModified(path+name,new ActionContext(name,"","","","") )
+      val fullPath = if(!path.endsWith("/"))  path+"/"+name else path+name
+      FileHelper.download(host+context,fullPath, name)
+      onModified(fullPath,new ActionContext(name,"","","","") )
     }
     case _ =>
       println("anythin else!")
