@@ -145,10 +145,8 @@ class ThumbnailCapturer {
 //	                thumbnails(resizeSpec.path) = thumbArr.mkString("|")
 	                thumbnails = thumbnails.+((resizeSpec.path, JsString(thumbArr.mkString("|"))))
 	                c += thumbArr.size
-	                println(thumbArr.mkString("|"))
-	                println(c)
 	            }
-	            println(Json.toJson(thumbnails))
+//	            println(Json.toJson(thumbnails))
 
 			} finally {
 //				client.getConnectionManager().shutdown();		
