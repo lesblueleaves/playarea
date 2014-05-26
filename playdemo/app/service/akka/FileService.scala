@@ -13,6 +13,8 @@ import org.joda.time.DateTime
 import helper.filemon.impl.ThumbnailCapturer
 import play.api.Logger
 import service.actor.FileActor
+import org.h2.store.fs.FileUtils
+import utils.Configs
 
 object FileService {
   val system = ActorSystem("FileSystem")
@@ -32,21 +34,10 @@ object FileService {
     fileActor ! (fileInfo)
     println("msg handle finished!")
   }
+  
+  def isExists(path:String):Boolean=FileUtils.exists(path)
+  
 }
-//  import helper.FileHelper
-//
-//  def receive = {
-//    case FileElem(url, name) =>
-//      FileHelper.download(url, name)
-//    case FileInfo(host,context,path,name) =>{
-//      println(s"got msg:$host, $context, $path, $name")
-//      val actionContext = new ActionContext( path, "", "", "", "");
-//      FileHelper.download(host+context+path+name, name)
-//      onModified(path+name,new ActionContext(name,"","","","") )
-//    }
-//    case _ =>
-//      println("anythin else!")
-//  }
 //  
 //  def  onModified(fullPath:String,actionContext:ActionContext){
 //    def capture = new ThumbnailCapturer

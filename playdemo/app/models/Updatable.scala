@@ -5,7 +5,6 @@ import play.api.Play.current
 import anorm.SqlParser._
 import org.joda.time.DateTime
 import anorm._
-import models.Parsers
 import play.Logger
 
 object Updatable {
