@@ -9,6 +9,7 @@ import service.actor.FileActor
 object FileService {
   val system = ActorSystem("FileSystem")
   val fileActor = system.actorOf(Props[FileActor], name = "fileService")
+//  val picActor = system.actorOf(Props[LocalActor], name = "LocalActor")
 
   case class FileElem(url: String, name: String)
   case class FileInfo(host:String,context:String,path: String, name: String)
